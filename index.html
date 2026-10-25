@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f5f0">
+  <meta name="description" content="Plan a Philippine bus trip, find mapped rest stops along the way, and estimate your arrival with time for breaks.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_PH">
+  <meta property="og:site_name" content="TransitCorridor">
+  <meta property="og:title" content="TransitCorridor | Plan the ride. Make time for breaks.">
+  <meta property="og:description" content="A simple Philippine bus trip planner with road routes, rest-stop candidates, and arrival estimates. No account needed.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="TransitCorridor | Philippine bus trip planner">
+  <meta name="twitter:description" content="Your route, your breaks, and a clearer idea of when you'll arrive.">
+  <!-- Once deployed, add og:url, a canonical URL, and an absolute og:image URL for your actual site. -->
+  <title>TransitCorridor | Philippine bus trip planner</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23165d4b'/%3E%3Cpath d='M20 43V18h24v25M20 34h24M26 18v16M38 18v16M24 43v6M40 43v6' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-bus" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="16" rx="3"/><path d="M5 11h14M9 3v8M8 19v2m8-2v2M8 15h1m6 0h1"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></symbol>
+    <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="M8 4v16m-4-4 4 4 4-4M16 20V4m-4 4 4-4 4 4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-food" viewBox="0 0 24 24"><path d="M5 3v6a3 3 0 0 0 6 0V3M8 3v18M18 3c-4 3-4 9 0 9h1M19 3v18"/></symbol>
+    <symbol id="i-break" viewBox="0 0 24 24"><path d="M4 7h12v7a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V7Zm12 1h2a3 3 0 1 1 0 6h-2M7 3v1m5-1v1M3 22h15"/></symbol>
+  </svg>
+  <a class="skip-link" href="#planner">Skip to trip planner</a>
+  <header class="masthead">
+    <a class="brand" href="./" aria-label="TransitCorridor home"><span class="brand-mark"><svg class="icon"><use href="#i-bus"/></svg></span><span>Transit<span class="brand-light">Corridor</span><small>PHILIPPINE BUS TRIP PLANNER</small></span></a>
+    <span class="header-note"><span class="live-dot"></span> A little planning goes a long way.</span>
+    <a class="privacy-link" href="privacy.html">Privacy</a>
+  </header>
+  <main>
+    <div id="map" aria-label="Route map. Use the planner to choose your trip endpoints."></div>
+    <div class="map-actions">
+      <button id="fit-route" class="map-button" type="button" title="Fit the route on the map" aria-label="Fit route on map"><svg class="icon"><use href="#i-fit"/></svg></button>
+      <button id="zoom-in" class="map-button" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+      <button id="zoom-out" class="map-button" type="button" title="Zoom out" aria-label="Zoom out">−</button>
+    </div>
+    <div id="map-message" class="map-message" role="status" hidden></div>
+    <div id="pick-banner" class="pick-banner" hidden><span id="pick-label">Tap the map to choose a point.</span><button id="cancel-pick" type="button">Cancel</button></div>
+    <aside id="planner" class="planner" data-sheet="half" aria-label="Trip planner">
+      <button id="sheet-toggle" class="sheet-toggle" aria-expanded="true" aria-controls="planner-body" type="button"><span class="sheet-grip"></span><span id="sheet-label">Expand trip planner</span><span class="sheet-chevron">⌃</span></button>
+      <div class="planner-heading">
+        <div><span class="eyebrow">THE JOURNEY, SORTED</span><h1>Where are we headed?</h1></div>
+        <span class="route-stamp"><svg class="icon"><use href="#i-bus"/></svg></span>
+      </div>
+      <div id="compact-summary" class="compact-summary" hidden><strong id="compact-time">Plan your trip</strong><span id="compact-detail">Choose your origin and destination</span></div>
+      <div id="planner-body" class="planner-body">
+        <p class="intro">Plan the ride. Make time for breaks.</p>
+        <form id="trip-form" novalidate>
+          <div class="waypoints">
+            <div class="waypoint" data-endpoint="origin">
+              <span class="endpoint-dot origin-dot" aria-hidden="true">A</span>
+              <div class="waypoint-content"><label for="origin">Leaving from</label><div class="input-row"><input id="origin" name="origin" type="search" placeholder="Town, terminal, or landmark" autocomplete="off" maxlength="180" aria-describedby="search-hint" aria-controls="origin-results" aria-expanded="false"><button class="search-button" data-search="origin" type="button" aria-label="Search for origin"><svg class="icon"><use href="#i-search"/></svg></button></div>
+              <div class="endpoint-tools"><button data-pick="origin" type="button"><svg class="icon"><use href="#i-pin"/></svg>Choose on map</button><button data-locate="origin" type="button"><svg class="icon"><use href="#i-locate"/></svg>My location</button></div>
+              <div id="origin-results" class="search-results" hidden></div></div>
+            </div>
+            <div class="waypoint-divider"><span></span><button id="swap" type="button" aria-label="Swap origin and destination" title="Swap origin and destination"><svg class="icon"><use href="#i-swap"/></svg></button></div>
+            <div class="waypoint" data-endpoint="destination">
+              <span class="endpoint-dot destination-dot" aria-hidden="true">B</span>
+              <div class="waypoint-content"><label for="destination">Going to</label><div class="input-row"><input id="destination" name="destination" type="search" placeholder="Town, terminal, or landmark" autocomplete="off" maxlength="180" aria-describedby="search-hint" aria-controls="destination-results" aria-expanded="false"><button class="search-button" data-search="destination" type="button" aria-label="Search for destination"><svg class="icon"><use href="#i-search"/></svg></button></div>
+              <div class="endpoint-tools"><button data-pick="destination" type="button"><svg class="icon"><use href="#i-pin"/></svg>Choose on map</button><button data-locate="destination" type="button"><svg class="icon"><use href="#i-locate"/></svg>My location</button></div>
+              <div id="destination-results" class="search-results" hidden></div></div>
+            </div>
+          </div>
+          <p id="search-hint" class="field-note">Type a place, then tap search or press Enter.</p>
+          <div class="section-label"><label for="profile">Your bus</label><span>Average road speed</span></div>
+          <select id="profile" name="profile"><option value="provincial">Provincial coach · 60 km/h</option><option value="express">A/C express · 48 km/h</option><option value="ordinary">City / ordinary · 30 km/h</option><option value="custom">Custom speed</option></select>
+          <div class="range-heading"><label for="speed">Average speed</label><output id="speed-value" for="speed">60 km/h</output></div><input id="speed" name="speed" type="range" min="15" max="100" step="1" value="60">
+          <div class="range-labels"><span>Slower roads</span><span>Highway travel</span></div>
+          <details class="trip-options"><summary>Departure &amp; search distance</summary><div class="option-grid"><label>Leaving at<input id="departure" type="datetime-local"></label><label>Places within<select id="radius"><option value="200">200 m of route</option><option value="450" selected>450 m of route</option><option value="800">800 m of route</option></select></label></div><p class="field-note">Wider searches can include places across a divided road. Confirm access with your bus operator.</p></details>
+          <button id="plan-button" class="primary-button" type="submit"><span id="plan-label">Find my route</span><svg class="icon"><use href="#i-arrow"/></svg></button>
+          <button id="sample" class="sample-button" type="button">Just looking? Try PITX → Legazpi <span aria-hidden="true">↗</span></button>
+        </form>
+        <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+        <section id="trip-result" class="trip-result" aria-labelledby="result-heading" hidden>
+          <div class="result-heading"><span class="eyebrow" id="result-heading">YOUR TRIP AT A GLANCE</span><span class="estimate-badge">Estimate</span></div>
+          <div class="arrival"><span id="trip-duration">—</span><small>on the road, breaks included</small></div>
+          <div class="trip-metrics"><div><span>Distance</span><strong id="trip-distance">—</strong></div><div><span>Break time</span><strong id="trip-breaks">0 min</strong></div><div><span>Arrive around</span><strong id="trip-arrival">—</strong></div></div>
+          <p id="arrival-date" class="arrival-date"></p>
+          <p class="estimate-note">Driving estimate, not a bus timetable. Traffic, pickups, weather, ferries, and detours can add time. Stop access and detour time are not verified.</p>
+        </section>
+        <section id="stopovers" class="stopovers" aria-labelledby="stops-heading" hidden>
+          <div class="section-title-row"><div><span class="eyebrow">ROOM FOR A BREAK</span><h2 id="stops-heading">Stopovers along the way</h2></div><span id="stop-count" class="count-pill">0</span></div>
+          <p class="stops-explainer">Possible stops along your route, with suggested break spacing. Confirm your bus operator’s stops. Nothing is added to your ETA until you choose it.</p>
+          <div id="stop-status" class="stop-status" role="status" aria-live="polite"></div>
+          <section id="suggestions-panel" class="suggestions-panel" aria-labelledby="suggestions-heading" hidden>
+            <div class="section-title-row"><h3 id="suggestions-heading">Suggested breaks</h3><label class="interval-label">About every<select id="break-interval" aria-label="Suggested break interval"><option value="2">2 hours</option><option value="2.5" selected>2½ hours</option><option value="3">3 hours</option></select></label></div>
+            <p class="suggestions-note">Picked by driving time, route proximity, and place type. Driving times exclude breaks and traffic; coach access and opening hours need confirmation.</p>
+            <div id="suggestions-list"></div><button id="add-suggestions" class="secondary-button" type="button">Add suggested breaks</button>
+          </section>
+          <div id="stop-filters" class="filter-chips" role="group" aria-label="Filter stopovers by purpose"><button type="button" data-filter="all" aria-pressed="true">All</button><button type="button" data-filter="food" aria-pressed="false">Food</button><button type="button" data-filter="toilets" aria-pressed="false">Toilets</button><button type="button" data-filter="rest" aria-pressed="false">Rest areas</button><button type="button" data-filter="terminal" aria-pressed="false">Terminals</button></div>
+          <label class="stop-search"><svg class="icon"><use href="#i-search"/></svg><input id="stop-search" type="search" placeholder="Filter by place name" aria-label="Filter stopovers by place name" maxlength="120"></label>
+          <div class="selection-row"><span id="selected-count">No breaks added</span><button id="clear-stops" type="button">Clear breaks</button></div>
+          <div id="stops-list" class="stops-list"></div><button id="more-stops" class="secondary-button" type="button" hidden>Show more places</button>
+          <div class="manual-stop"><h3>Know a stop that's missing?</h3><p>Map data can be incomplete. Add the break time yourself.</p><div class="manual-row"><input id="manual-name" type="text" placeholder="Stop name (optional)" aria-label="Name of manual break" maxlength="80"><input id="manual-minutes" type="number" min="1" max="240" step="1" value="15" aria-label="Manual break duration in minutes"><span>min</span><button id="add-manual" type="button" aria-label="Add manual break">+</button></div><div id="manual-list"></div></div>
+        </section>
+        <details class="about-estimate"><summary>How the estimate works</summary><p>Road distance ÷ your average speed + the breaks you add. The route uses a driving profile, not bus-specific road restrictions or a scheduled bus service. Average speed includes driving slowdowns; add expected pickups or delays as a manual break.</p><p>Suggestions aim for a break about every 2–3 driving hours, with fewer stops on short trips. They use live map results and a small, source-linked starter guide for the southern Luzon corridor. Guide places appear only when near your actual road route. Food and toilet badges distinguish mapped facilities from listings or traveler reports. A restaurant is never assumed to have toilets. This is a planning aid, not an operator itinerary.</p><p>Public services may be slow or unavailable. Search results and routes are cached in this tab for up to 30 minutes. Internet is required.</p></details>
+        <footer class="planner-footer"><span>Made for the long ride.</span><div><a href="privacy.html">Privacy</a><button id="clear-cache" type="button">Clear local data</button></div></footer>
+      </div>
+    </aside>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><div class="no-script">TransitCorridor needs JavaScript to search places and calculate a route. Enable it in your browser, then reload.</div></noscript>
+</body>
+</html>

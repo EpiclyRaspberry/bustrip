@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f5f0">
+  <meta name="description" content="How TransitCorridor handles searches, optional device location, browser storage, and third-party map services.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Privacy | TransitCorridor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="privacy-page">
+  <header class="masthead privacy-header"><a class="brand" href="./"><span class="brand-mark" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="16" rx="3"/><path d="M5 11h14M9 3v8M8 19v2m8-2v2M8 15h1m6 0h1"/></svg></span><span>Transit<span class="brand-light">Corridor</span><small>PHILIPPINE BUS TRIP PLANNER</small></span></a><a class="privacy-link" href="./">Back to planner ↗</a></header>
+  <main class="privacy-main">
+    <a class="back" href="./">← Back to your trip</a>
+    <span class="eyebrow">A NOTE ON YOUR DATA</span>
+    <h1>Privacy, in plain language.</h1>
+    <p class="updated">Last updated October 25, 2026</p>
+    <p class="lead">TransitCorridor runs in your browser. We have no app backend, user accounts, advertising, or analytics. We do not receive or store your trips on a server we operate.</p>
+    <div class="privacy-notice"><p>Maps, searches, and routes come from external services. Those providers and the website host receive information when your browser connects to them.</p></div>
+    <h2>What stays in your browser</h2>
+    <p>Your selected places, departure time, average speed, and breaks are used to estimate the trip. Active trip details stay in memory. Searches, route coordinates, and mapped stopover results may be cached in this tab's session storage for up to 30 minutes to avoid repeat requests. We do not add tracking cookies or use local storage.</p>
+    <p>You can remove the active trip and our cached data with <strong>Clear local data</strong> in the planner footer. Closing the tab normally clears session storage, although browser session restoration can retain it. Browser site-data controls can also remove it. Your browser may separately cache map tiles and library files.</p>
+    <h2>When you use your location</h2>
+    <p>Location is requested only when you tap <strong>My location</strong> and allow your browser's permission prompt. It sets an endpoint for that trip. There is no background location tracking and no automatic reverse-address lookup. The coordinate is sent to the routing service when you plan a trip; route coordinates are sent to the stopover service. The map provider can infer the area you are viewing from the tiles requested.</p>
+    <p>You can use search or a map pin instead. Revoke location access in your browser settings whenever you like.</p>
+    <h2>Services your browser contacts</h2>
+    <ul>
+      <li><strong>OpenStreetMap tiles:</strong> receives requests for the areas of the map you view. Map data is provided by OpenStreetMap contributors under the ODbL. See the <a href="https://osmfoundation.org/wiki/Privacy_Policy">OpenStreetMap Foundation privacy policy</a>.</li>
+      <li><strong>Photon by komoot:</strong> receives the place text you explicitly submit for search. We do not send a search for each keystroke. See <a href="https://www.komoot.com/privacy">komoot's privacy policy</a> and the <a href="https://github.com/komoot/photon">Photon service information</a>.</li>
+      <li><strong>OSRM's public routing service:</strong> receives your chosen origin and destination coordinates and returns a driving route. See the <a href="https://project-osrm.org/">OSRM project</a>.</li>
+      <li><strong>Overpass API:</strong> receives a route corridor to find mapped stopovers and facilities. Requests use overpass-api.de, with overpass.private.coffee as a fallback. See the <a href="https://wiki.openstreetmap.org/wiki/Overpass_API">Overpass service information</a>. These are independently operated public services.</li>
+      <li><strong>unpkg:</strong> serves the Leaflet map library and stylesheet. See <a href="https://unpkg.com/">unpkg</a>. No external fonts or icon libraries are loaded.</li>
+      <li><strong>The website host:</strong> receives normal website requests. When hosted on GitHub Pages, GitHub may process visitor IP addresses and access logs. See the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub privacy statement</a>. A custom domain using a DNS or proxy provider may involve that provider too.</li>
+    </ul>
+    <p>These connections expose normal network information, such as your IP address, browser information, request time, and the site's origin. Providers may log or retain requests under their own policies. We do not control their retention or combine their records. We do not sell trip information.</p>
+    <p>A small starter guide of public place names, coordinates, and source links is bundled with the app. Matching these places to your route and spacing suggested breaks happens in your browser. Those guide sources receive a request only if you open their links. Guide entries are not live confirmations of opening hours, facilities, or bus access.</p>
+    <h2>Your choices and deletion</h2>
+    <p>No account or personal profile is created here, so there is no server-side app account for us to delete. Clear local data in the planner to remove what this tab holds. For information held by an external provider or the host, use that provider's privacy contact or rights-request process.</p>
+    <h2>Security and limits</h2>
+    <p>External services use HTTPS. Cached app data is limited to this browser tab and is not encrypted separately. Anyone with access to your unlocked device may see it. Avoid entering sensitive addresses or information you do not want shared with the services above. Public APIs can be unavailable, and their policies can change.</p>
+    <h2>Questions</h2>
+    <p>Contact the developer, <a href="https://discord.com/users/561366963381862417">Raspberry on Discord</a>, with privacy questions about this app. This page will be updated if the app's data practices change.</p>
+  </main>
+</body>
+</html>
