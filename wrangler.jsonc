@@ -6,7 +6,6 @@
   "preview_urls": false,
   "assets": {
     "directory": ".deploy",
-    "html_handling": "none",
     "not_found_handling": "none"
   }
 }
