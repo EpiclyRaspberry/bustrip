@@ -2,7 +2,7 @@
 
 **Plan the ride. Make time for breaks.**
 
-**TransitCorridor** is a 100% client-side, mobile-first web application for planning Philippine bus trips, discovering mapped rest stops and terminals along the route corridor, and estimating arrival times with customizable layover breaks. It runs entirely in the browser with zero backend dependencies, user accounts, or analytics, and is ready for static hosting on GitHub Pages.
+**TransitCorridor** is a 100% client-side, mobile-first web application for planning Philippine bus trips, discovering mapped rest stops and terminals along the route corridor, and estimating arrival times with customizable layover breaks. It runs entirely in the browser with zero backend dependencies, user accounts, or analytics, and is hosted as static assets on Cloudflare Workers.
 
 ---
 
@@ -89,3 +89,28 @@ See [privacy.html](privacy.html) for full details on how each service is contact
 ## 📄 License
 
 Licensed under the [MIT License](LICENSE).
+
+
+## Hosting and deployment
+
+- Primary URL: https://bustrip.flarial.xyz/
+- Backup URL: https://bustrip.ashanksundaram2.workers.dev/
+- Cloudflare service: `bustrip`, serving static assets only.
+- No application server, database, or build dependencies are required.
+
+To stage the public files and publish an authorized update:
+
+```sh
+node scripts/build.mjs
+pnpm dlx wrangler@4.114.0 deploy
+```
+
+Authenticate through an approved Cloudflare credential outside this repository.
+Do not store Flarial account credentials in this repository or its GitHub Actions secrets.
+Deployments are manual; pushing to GitHub alone does not update this Cloudflare service.
+The managed custom domain is attached separately through the account's Worker Custom Domains API or dashboard; it does not require a zone Worker Route.
+
+The staging script copies only the four application files, the license, and `deployment.json` into `.deploy/`.
+`deployment.json` identifies the deployed Git revision so the live assets can be checked against source.
+Repository metadata, scripts, configuration, and credentials are never uploaded.
+The expired GitHub Pages `CNAME` has been removed from the source.

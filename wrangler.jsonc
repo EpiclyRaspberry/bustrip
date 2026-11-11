@@ -1,0 +1,11 @@
+{
+  "name": "bustrip",
+  "account_id": "6e0013828983fdf19fc7d3c1fafed947",
+  "compatibility_date": "2026-11-11",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": ".deploy",
+    "not_found_handling": "none"
+  }
+}

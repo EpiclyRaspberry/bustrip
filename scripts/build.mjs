@@ -1,0 +1,13 @@
+import { mkdir, copyFile, writeFile, rm } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+const root = fileURLToPath(new URL('../', import.meta.url));
+const output = resolve(root, '.deploy');
+const files = ['index.html', 'style.css', 'script.js', 'privacy.html', 'LICENSE'];
+const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
+await rm(output, { recursive: true, force: true });
+await mkdir(output, { recursive: true });
+for (const file of files) await copyFile(resolve(root, file), resolve(output, file));
+await writeFile(resolve(output, 'deployment.json'), JSON.stringify({ commit, files }, null, 2) + '\n');
+console.log(`Staged ${files.length} static files and deployment.json for ${commit}.`);
